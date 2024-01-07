@@ -1,0 +1,1 @@
+insert into TASK(STATUS, COLUMN_ID, ID, DESCRIPTION, TITLE) VALUES ( 0, 1, NEXTVAL('task_seq'), 'TESTE', 'TESTE' );
