@@ -1,1 +1,2 @@
-insert into TASK(STATUS, COLUMN_ID, ID, DESCRIPTION, TITLE) VALUES ( 0, 1, NEXTVAL('task_seq'), 'TESTE', 'TESTE' );
+alter table TASK ADD COLUMN created_at TIMESTAMP default CURRENT_TIMESTAMP;
+update TASK SET TASK.created_at = CURRENT_TIMESTAMP;

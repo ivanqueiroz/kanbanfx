@@ -1,30 +1,34 @@
-package dev.ivanqueiroz.kanbanfx.view;
+package dev.ivanqueiroz.kanbanfx;
 
 import dev.ivanqueiroz.kanbanfx.view.event.StageReadyEvent;
-import dev.ivanqueiroz.kanbanfx.view.main.MainController;
+import dev.ivanqueiroz.kanbanfx.view.controller.MainWindow;
+import fr.brouillard.oss.cssfx.CSSFX;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import lombok.RequiredArgsConstructor;
 import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class StageReadyEventListener implements ApplicationListener<StageReadyEvent> {
 
+  @Value("${spring.application.ui.title}")
   private final String applicationTitle;
   private final FxWeaver fxWeaver;
-
-  public StageReadyEventListener(
-      @Value("${spring.application.ui.title}") String applicationTitle, FxWeaver fxWeaver) {
-    this.applicationTitle = applicationTitle;
-    this.fxWeaver = fxWeaver;
-  }
 
   @Override
   public void onApplicationEvent(StageReadyEvent event) {
     var stage = event.getStage();
-    stage.setScene(new Scene(fxWeaver.loadView(MainController.class)));
+    Parent parent = fxWeaver.loadView(MainWindow.class);
+    var scene = new Scene(parent);
+    scene.getStylesheets().add(StageReadyEventListener.class.getResource("multi-column-app.css").toExternalForm());
+    CSSFX.start();
+    stage.setScene(scene);
     stage.setTitle(applicationTitle);
+    stage.centerOnScreen();
     stage.show();
   }
 }

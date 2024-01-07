@@ -1,5 +1,7 @@
 package dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data;
 
+import static dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskStatusQueryResponse.TODO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskQueryResponse {
-    private Long id;
+    private String title;
     private String description;
-    private String name;
+    @Builder.Default
+    private TaskStatusQueryResponse status = TODO;
 }

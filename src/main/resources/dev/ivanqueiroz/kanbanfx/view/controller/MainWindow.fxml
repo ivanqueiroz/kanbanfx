@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
-
-
-<BorderPane xmlns:fx="http://javafx.com/fxml" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0"
-            prefWidth="1315.0" xmlns="http://javafx.com/javafx/21" fx:controller="dev.ivanqueiroz.kanbanfx.view.controller.MainWindow">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0" prefWidth="1315.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dev.ivanqueiroz.kanbanfx.view.controller.MainWindow">
    <top>
-      <HBox prefHeight="60.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <Label alignment="CENTER" prefHeight="102.0" prefWidth="234.0" text="KanbanFX" textFill="#9e3a99">
-            <font>
-               <Font name="Arial" size="24.0"/>
-            </font>
-         </Label>
+      <HBox prefHeight="28.0" prefWidth="200.0" BorderPane.alignment="TOP_LEFT">
+         <MenuBar prefHeight="27.0" HBox.hgrow="ALWAYS">
+            <Menu mnemonicParsing="false" text="File">
+               <MenuItem fx:id="quitMenuItem" accelerator="Ctrl+Q" mnemonicParsing="false" text="Quit" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+               <MenuItem mnemonicParsing="false" text="Delete" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <MenuItem mnemonicParsing="false" text="About" />
+            </Menu>
+         </MenuBar>
       </HBox>
    </top>
 </BorderPane>

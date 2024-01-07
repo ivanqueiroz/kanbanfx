@@ -1,7 +1,7 @@
 package dev.ivanqueiroz.kanbanfx.domain.application.ports.input;
 
-import dev.ivanqueiroz.jkaban.domain.model.Board;
+import dev.ivanqueiroz.kanbanfx.domain.model.Board;
 
 public interface CreateBoardUseCase {
-    Board createBoard(Board board);
+  Board createBoard(Board board);
 }

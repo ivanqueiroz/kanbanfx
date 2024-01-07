@@ -1,6 +1,5 @@
-package dev.ivanqueiroz.kanbanfx.view;
+package dev.ivanqueiroz.kanbanfx;
 
-import dev.ivanqueiroz.kanbanfx.SpringBootKanbanFxApplication;
 import dev.ivanqueiroz.kanbanfx.view.event.StageReadyEvent;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -18,7 +17,9 @@ public class KanbanFxMainApplication extends Application {
 
   @Override
   public void init() {
-    applicationContext = new SpringApplicationBuilder(SpringBootKanbanFxApplication.class).run();
+    applicationContext =
+        new SpringApplicationBuilder(SpringBootKanbanFxApplication.class)
+            .run(getParameters().getRaw().toArray(new String[0]));
   }
 
   @Override
@@ -26,5 +27,4 @@ public class KanbanFxMainApplication extends Application {
     applicationContext.close();
     Platform.exit();
   }
-
 }

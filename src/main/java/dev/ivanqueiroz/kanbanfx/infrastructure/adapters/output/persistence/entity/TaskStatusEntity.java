@@ -1,7 +1,7 @@
 package dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.entity;
 
-public enum TaskStatus {
-    TO_DO,
+public enum TaskStatusEntity {
+    TODO,
     IN_PROGRESS,
     DONE
 }

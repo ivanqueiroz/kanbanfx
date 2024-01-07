@@ -1,4 +1,4 @@
-package dev.ivanqueiroz.kanbanfx.event;
+package dev.ivanqueiroz.kanbanfx.view.event;
 
 import javafx.stage.Stage;
 import org.springframework.context.ApplicationEvent;

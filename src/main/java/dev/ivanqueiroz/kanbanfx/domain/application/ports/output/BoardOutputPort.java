@@ -1,12 +1,10 @@
-package dev.ivanqueiroz.kanbanfx.domain.application.ports;
+package dev.ivanqueiroz.kanbanfx.domain.application.ports.output;
 
 import dev.ivanqueiroz.kanbanfx.domain.model.Board;
-
-import java.util.List;
 import java.util.Optional;
 
 public interface BoardOutputPort {
 
     Board save(Board board);
-    Optional<Board> findAllBoardById(Long boardId);
+    Optional<Board> findBoardByName(String name);
 }
