@@ -12,14 +12,13 @@ import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import lombok.RequiredArgsConstructor;
@@ -56,8 +55,8 @@ public class MainWindow {
     multiColumnListView.setPlaceholderTo(
         TaskQueryResponse.builder().title("").description("").build());
     VBox.setVgrow(multiColumnListView, Priority.ALWAYS);
-
-    borderPane.setCenter(createBoardColumnsVBox(multiColumnListView));
+    var boardColumnsVBox = createBoardColumnsVBox(multiColumnListView);
+    borderPane.setCenter(boardColumnsVBox);
   }
 
   @NotNull
@@ -120,7 +119,14 @@ public class MainWindow {
         .map(
             columnQueryResponse -> {
               var result = new ListViewColumn<TaskQueryResponse>();
-              result.setHeader(new Label(columnQueryResponse.getName()));
+              var header = new HBox();
+              header.setAlignment( Pos.CENTER_LEFT );
+              var headerRight = new HBox();
+              headerRight.setAlignment(Pos.CENTER_RIGHT );
+              headerRight.getChildren().add(new Button("+"));
+              HBox.setHgrow(headerRight, Priority.ALWAYS );
+              header.getChildren().addAll(new Label(columnQueryResponse.getName()), headerRight);
+              result.setHeader(header);
               result.getItems().setAll(columnQueryResponse.getTasks());
               return result;
             })
@@ -135,6 +141,7 @@ public class MainWindow {
   private static class TaskListCell extends ColumnListCell<TaskQueryResponse> {
     private final BooleanProperty placeholder =
         new SimpleBooleanProperty(this, "placeholder", false);
+    private StringProperty taskDescription;
 
     public TaskListCell(MultiColumnListView<TaskQueryResponse> multiColumnListView) {
       super(multiColumnListView);
@@ -150,10 +157,24 @@ public class MainWindow {
       contentPlaceholder.visibleProperty().bind(placeholder);
       contentPlaceholder.managedProperty().bind(placeholder);
 
-      var label = new Label();
-      label.textProperty().bind(textProperty());
+      var taskTitleLbl = new Label();
+      taskTitleLbl.setStyle("-fx-font-size: 12");
+      taskTitleLbl.textProperty().bind(textProperty());
+      taskTitleLbl.setPadding(new Insets(10,10,0,10));
 
-      var wrapper = new StackPane(content, contentPlaceholder, label);
+      var separator = new Separator();
+      separator.setPadding(new Insets(10,10,0,10));
+
+      var taskDescriptionLbl = new Label();
+      taskDescriptionLbl.setStyle("-fx-font-size: 10");
+      taskDescriptionLbl.textProperty().bind(taskDescriptionProperty());
+      taskDescriptionLbl.setPadding(new Insets(10,10,0,10));
+
+      content.getChildren().add(taskTitleLbl);
+      content.getChildren().add(separator);
+      content.getChildren().add(taskDescriptionLbl);
+
+      var wrapper = new StackPane(content, contentPlaceholder);
       setGraphic(wrapper);
       setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
     }
@@ -175,6 +196,7 @@ public class MainWindow {
           setText("To");
         } else {
           setText(item.getTitle());
+          setTaskDescription(item.getDescription());
           getStyleClass().add(item.getStatus().getDescription());
           getTaskColumnIndex()
               .ifPresent(columnIndex -> updateTaskStatus(item, columnIndex, getStyleClass()));
@@ -182,6 +204,15 @@ public class MainWindow {
       } else {
         setText("");
       }
+    }
+
+    public final void setTaskDescription(String value) { taskDescriptionProperty().setValue(value); }
+
+    public final StringProperty taskDescriptionProperty() {
+      if (taskDescription == null) {
+        taskDescription = new SimpleStringProperty(this, "taskDescription", "");
+      }
+      return taskDescription;
     }
 
     private static void updateTaskStatus(
