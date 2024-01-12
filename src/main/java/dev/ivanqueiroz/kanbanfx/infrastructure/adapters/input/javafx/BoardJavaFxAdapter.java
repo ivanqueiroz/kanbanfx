@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class BoardJavaFxAdapter {
-    private final GetBoardUseCase getBoardUseCase;
-    private final BoardJavaFxMapper boardJavaFxMapper;
+  private final GetBoardUseCase getBoardUseCase;
+  private final BoardJavaFxMapper boardJavaFxMapper;
 
-    public BoardQueryResponse getBoardByName(String name) {
-        var board = getBoardUseCase.getBoardByName(name);
-        return boardJavaFxMapper.toBoardQueryResponse(board);
-    } 
+  public BoardQueryResponse getBoardByName(String name) {
+    var board = getBoardUseCase.getBoardByName(name);
+    return boardJavaFxMapper.toBoardQueryResponse(board);
+  }
 }

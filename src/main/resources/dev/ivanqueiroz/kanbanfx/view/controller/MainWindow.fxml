@@ -10,12 +10,6 @@
             <Menu mnemonicParsing="false" text="File">
                <MenuItem fx:id="quitMenuItem" accelerator="Ctrl+Q" mnemonicParsing="false" text="Quit" />
             </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-               <MenuItem mnemonicParsing="false" text="Delete" />
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-               <MenuItem mnemonicParsing="false" text="About" />
-            </Menu>
          </MenuBar>
       </HBox>
    </top>

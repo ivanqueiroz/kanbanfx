@@ -1,9 +1,8 @@
 package dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.List;
+import lombok.*;
 
 @Entity
 @Getter

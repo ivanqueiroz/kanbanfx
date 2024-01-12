@@ -1,0 +1,32 @@
+.multi-column-list-view {
+}
+
+.multi-column-list-view .grid-pane {
+    -fx-hgap: 10px;
+    -fx-vgap: 10px;
+    -fx-grid-lines-visible: false;
+}
+
+.multi-column-list-view .column-list-cell {
+}
+
+.multi-column-list-view .column-list-cell:from {
+}
+
+.multi-column-list-view .column-list-cell:to {
+}
+
+.multi-column-list-view .list-view .placeholder:drag-over {
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2px;
+    -fx-border-style: dashed;
+    -fx-border-insets: 15px;
+}
+
+.multi-column-list-view .column-separator {
+    -size: 1px;
+    -fx-min-width: -size;
+    -fx-pref-width: -size;
+    -fx-max-width: -size;
+    -fx-background-color: -fx-box-border;
+}

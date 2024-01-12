@@ -5,6 +5,7 @@ import java.util.Optional;
 
 public interface BoardOutputPort {
 
-    Board save(Board board);
-    Optional<Board> findBoardByName(String name);
+  Board save(Board board);
+
+  Optional<Board> findBoardByName(String name);
 }

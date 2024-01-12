@@ -13,22 +13,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ColumnPersistenceAdapter implements ColumnOutputPort {
 
-    private final ColumnRepository columnRepository;
-    private final BoardRepository boardRepository;
-    private final ColumnPersistenceMapper columnPersistenceMapper;
+  private final ColumnRepository columnRepository;
+  private final BoardRepository boardRepository;
+  private final ColumnPersistenceMapper columnPersistenceMapper;
 
-    @Override
-    public Column save(Column column) {
-        var columnEntity = columnPersistenceMapper.toColumnEntity(column);
-        var savedColumn = columnRepository.save(columnEntity);
-        return columnPersistenceMapper.toColumn(savedColumn);
-    }
+  @Override
+  public Column save(Column column) {
+    var columnEntity = columnPersistenceMapper.toColumnEntity(column);
+    var savedColumn = columnRepository.save(columnEntity);
+    return columnPersistenceMapper.toColumn(savedColumn);
+  }
 
-    @Override
-    public List<Column> findColumnsByBoardName(String boardName) {
-        var boardEntity = boardRepository.findBoardEntityByNameEqualsIgnoreCase(boardName);
-        Long boardId = boardEntity.map(BoardEntity::getId).orElseThrow();
-        var columnEntities = columnRepository.findColumnEntitiesByBoardId(boardId);
-        return columnPersistenceMapper.toColumns(columnEntities.orElse(Collections.emptyList()));
-    }
+  @Override
+  public List<Column> findColumnsByBoardName(String boardName) {
+    var boardEntity = boardRepository.findBoardEntityByNameEqualsIgnoreCase(boardName);
+    Long boardId = boardEntity.map(BoardEntity::getId).orElseThrow();
+    var columnEntities = columnRepository.findColumnEntitiesByBoardId(boardId);
+    return columnPersistenceMapper.toColumns(columnEntities.orElse(Collections.emptyList()));
+  }
 }

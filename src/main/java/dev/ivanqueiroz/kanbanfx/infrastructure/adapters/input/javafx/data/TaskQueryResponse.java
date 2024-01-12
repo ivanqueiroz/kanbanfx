@@ -12,8 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskQueryResponse {
-    private String title;
-    private String description;
-    @Builder.Default
-    private TaskStatusQueryResponse status = TODO;
+  private String title;
+  private String description;
+  @Builder.Default private TaskStatusQueryResponse status = TODO;
 }

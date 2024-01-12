@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ColumnQueryResponse {
-    private String name;
-    private int workInProgressLimit;
-    private List<TaskQueryResponse> tasks;
+  private String name;
+  private int workInProgressLimit;
+  private List<TaskQueryResponse> tasks;
 }

@@ -8,8 +8,7 @@ import lombok.Data;
 @Builder
 public class Column {
 
-    private String name;
-    private int workInProgressLimit;
-    private List<Task> tasks;
-
+  private String name;
+  private int workInProgressLimit;
+  private List<Task> tasks;
 }

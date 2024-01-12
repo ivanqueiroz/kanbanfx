@@ -1,8 +1,8 @@
 package dev.ivanqueiroz.kanbanfx.domain.service;
 
+import dev.ivanqueiroz.kanbanfx.domain.application.ports.input.CreateBoardUseCase;
 import dev.ivanqueiroz.kanbanfx.domain.application.ports.input.GetBoardUseCase;
 import dev.ivanqueiroz.kanbanfx.domain.application.ports.output.BoardOutputPort;
-import dev.ivanqueiroz.kanbanfx.domain.application.ports.input.CreateBoardUseCase;
 import dev.ivanqueiroz.kanbanfx.domain.model.Board;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
