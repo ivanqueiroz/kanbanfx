@@ -4,4 +4,6 @@ import dev.ivanqueiroz.kanbanfx.domain.model.Column;
 
 public interface CreateColumnUseCase {
   Column createColumn(Column column);
+
+  Column updateColumn(Column column);
 }

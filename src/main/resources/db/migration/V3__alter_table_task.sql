@@ -1,2 +1,0 @@
-alter table TASK ADD COLUMN created_at TIMESTAMP default CURRENT_TIMESTAMP;
-update TASK SET TASK.created_at = CURRENT_TIMESTAMP;

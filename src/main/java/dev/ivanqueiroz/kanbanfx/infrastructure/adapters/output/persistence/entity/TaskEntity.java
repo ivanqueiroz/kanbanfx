@@ -13,7 +13,8 @@ import lombok.*;
 @Table(name = "task")
 public class TaskEntity {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_id_tasks")
+  @SequenceGenerator(name = "sequence_id_tasks", sequenceName = "task_seq", allocationSize = 1)
   private Long id;
 
   private String title;
@@ -26,4 +27,6 @@ public class TaskEntity {
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;
+
+  private Long position;
 }

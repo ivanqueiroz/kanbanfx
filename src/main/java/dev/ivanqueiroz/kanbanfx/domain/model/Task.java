@@ -11,4 +11,5 @@ public class Task {
   private String description;
   @Builder.Default private TaskStatus status = TaskStatus.TODO;
   @Builder.Default private LocalDateTime createdAt = LocalDateTime.now();
+  private Long position;
 }

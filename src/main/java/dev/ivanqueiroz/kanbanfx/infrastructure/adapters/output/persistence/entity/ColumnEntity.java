@@ -13,7 +13,8 @@ import lombok.*;
 @Table(name = "column")
 public class ColumnEntity {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_id_column")
+  @SequenceGenerator(name = "sequence_id_column", sequenceName = "column_seq", allocationSize = 1)
   private Long id;
 
   private String name;
@@ -23,6 +24,6 @@ public class ColumnEntity {
   @JoinColumn(name = "board_id", nullable = false)
   private BoardEntity board;
 
-  @OneToMany(mappedBy = "column")
+  @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
   List<TaskEntity> tasks;
 }

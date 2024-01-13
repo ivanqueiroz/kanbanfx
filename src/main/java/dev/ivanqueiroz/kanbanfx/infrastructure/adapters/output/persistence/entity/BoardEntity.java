@@ -14,7 +14,8 @@ import lombok.*;
 public class BoardEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_id_board")
+  @SequenceGenerator(name = "sequence_id_board", sequenceName = "board_seq", allocationSize = 1)
   private Long id;
 
   private String name;

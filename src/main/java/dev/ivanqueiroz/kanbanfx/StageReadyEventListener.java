@@ -3,6 +3,7 @@ package dev.ivanqueiroz.kanbanfx;
 import dev.ivanqueiroz.kanbanfx.view.controller.MainWindow;
 import dev.ivanqueiroz.kanbanfx.view.event.StageReadyEvent;
 import fr.brouillard.oss.cssfx.CSSFX;
+import java.util.Objects;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,6 @@ import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ColumnQueryResponse {
+public class BoardData {
+  private String description;
   private String name;
-  private int workInProgressLimit;
-  private List<TaskQueryResponse> tasks;
+  private List<ColumnData> columns;
 }

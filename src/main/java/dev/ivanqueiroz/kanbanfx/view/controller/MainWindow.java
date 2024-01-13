@@ -1,14 +1,16 @@
 package dev.ivanqueiroz.kanbanfx.view.controller;
 
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.BoardJavaFxAdapter;
-import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.BoardQueryResponse;
-import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.ColumnQueryResponse;
-import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskQueryResponse;
-import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskStatusQueryResponse;
+import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.BoardData;
+import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.ColumnData;
+import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskData;
+import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskStatusData;
 import dev.ivanqueiroz.kanbanfx.view.components.MultiColumnListView;
 import dev.ivanqueiroz.kanbanfx.view.components.MultiColumnListView.ColumnListCell;
 import dev.ivanqueiroz.kanbanfx.view.components.MultiColumnListView.ListViewColumn;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -19,7 +21,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
@@ -49,6 +50,8 @@ public class MainWindow {
   @FXML private BorderPane borderPane;
   private final BoardJavaFxAdapter boardJavaFxAdapter;
   private final FxWeaver fxWeaver;
+  private MultiColumnListView<TaskData> multiColumnListView;
+  private BoardData taskBoard;
 
   @FXML
   public void initialize() {
@@ -57,23 +60,24 @@ public class MainWindow {
   }
 
   private void initializeBoard() {
-    var multiColumnListView = new MultiColumnListView<TaskQueryResponse>();
+    multiColumnListView = new MultiColumnListView<>();
     multiColumnListView.setCellFactory(listView -> new TaskListCell(multiColumnListView));
 
-    var columns = createBoardColumns(boardJavaFxAdapter.getBoardByName("Task Board"));
+    taskBoard = boardJavaFxAdapter.getBoardByName("Task Board");
+    var columns = createBoardColumns(taskBoard);
     multiColumnListView.getColumns().setAll(columns);
+    multiColumnListView.setId("multiColumnListView");
 
     multiColumnListView.setPlaceholderFrom(
-        TaskQueryResponse.builder().title("from").description("from_description").build());
+        TaskData.builder().title("from").description("from_description").build());
     multiColumnListView.setPlaceholderTo(
-        TaskQueryResponse.builder().title("to").description("to_description").build());
+        TaskData.builder().title("to").description("to_description").build());
     VBox.setVgrow(multiColumnListView, Priority.ALWAYS);
     var boardColumnsVBox = createBoardColumnsVBox(multiColumnListView);
     borderPane.setCenter(boardColumnsVBox);
   }
 
-  private static VBox createBoardColumnsVBox(
-      MultiColumnListView<TaskQueryResponse> multiColumnListView) {
+  private static VBox createBoardColumnsVBox(MultiColumnListView<TaskData> multiColumnListView) {
     var optionsBox = createBoardColumnsOptionBoxActions(multiColumnListView);
     var vbox = new VBox(10, multiColumnListView, optionsBox);
     vbox.setAlignment(Pos.TOP_RIGHT);
@@ -82,7 +86,7 @@ public class MainWindow {
   }
 
   private static HBox createBoardColumnsOptionBoxActions(
-      MultiColumnListView<TaskQueryResponse> multiColumnListView) {
+      MultiColumnListView<TaskData> multiColumnListView) {
     var optionBoxConfig = getBoardColumnsOptionBoxConfig(multiColumnListView);
 
     var optionsBox =
@@ -96,7 +100,7 @@ public class MainWindow {
   }
 
   private static OptionBoxConfig getBoardColumnsOptionBoxConfig(
-      MultiColumnListView<TaskQueryResponse> multiColumnListView) {
+      MultiColumnListView<TaskData> multiColumnListView) {
     var showHeaders = new CheckBox("Show Headers");
     showHeaders.selectedProperty().bindBidirectional(multiColumnListView.showHeadersProperty());
 
@@ -125,41 +129,47 @@ public class MainWindow {
   private record OptionBoxConfig(
       CheckBox showHeaders, CheckBox disableDragAndDrop, CheckBox separators) {}
 
-  private List<ListViewColumn<TaskQueryResponse>> createBoardColumns(BoardQueryResponse taskBoard) {
+  private List<ListViewColumn<TaskData>> createBoardColumns(BoardData taskBoard) {
     return taskBoard.getColumns().stream()
         .map(
             columnQueryResponse -> {
-              var result = new ListViewColumn<TaskQueryResponse>();
+              var result = new ListViewColumn<TaskData>();
               var header = createColumnHeader(columnQueryResponse);
               result.setHeader(header);
-              result.getItems().setAll(columnQueryResponse.getTasks());
+              result
+                  .getItems()
+                  .setAll(
+                      columnQueryResponse.getTasks().stream()
+                          .sorted(Comparator.comparing(TaskData::getPosition))
+                          .toList());
               return result;
             })
         .toList();
   }
 
-  private HBox createColumnHeader(ColumnQueryResponse columnQueryResponse) {
+  private HBox createColumnHeader(ColumnData columnData) {
     var header = new HBox();
     header.setAlignment(Pos.CENTER_LEFT);
 
     var headerRight = new HBox();
     headerRight.setAlignment(Pos.CENTER_RIGHT);
-    var createTaskActionButton = getButton();
+    var createTaskActionButton = buildCreateTaskButton(columnData.getName());
     headerRight.getChildren().add(createTaskActionButton);
 
     HBox.setHgrow(headerRight, Priority.ALWAYS);
-    header.getChildren().addAll(new Label(columnQueryResponse.getName()), headerRight);
+    header.getChildren().addAll(new Label(columnData.getName()), headerRight);
     return header;
   }
 
-  private Button getButton() {
+  private Button buildCreateTaskButton(String columnName) {
     var createTaskActionButton = new Button("+");
 
     createTaskActionButton.setOnAction(
         event -> {
           FxControllerAndView<TaskForm, VBox> taskForm = fxWeaver.load(TaskForm.class);
-          var window = ((Node) event.getTarget()).getScene().getWindow();
-          taskForm.getController().show(window);
+          var statusQueryResponse =
+              TaskStatusData.getByDescription(columnName.toLowerCase(Locale.ROOT));
+          taskForm.getController().show(event, statusQueryResponse, multiColumnListView);
         });
 
     return createTaskActionButton;
@@ -171,12 +181,12 @@ public class MainWindow {
   }
 
   @Slf4j
-  private static class TaskListCell extends ColumnListCell<TaskQueryResponse> {
+  private static class TaskListCell extends ColumnListCell<TaskData> {
     private final BooleanProperty placeholder =
         new SimpleBooleanProperty(this, "placeholder", false);
     private StringProperty taskDescription;
 
-    public TaskListCell(MultiColumnListView<TaskQueryResponse> multiColumnListView) {
+    public TaskListCell(MultiColumnListView<TaskData> multiColumnListView) {
       super(multiColumnListView);
       getStyleClass().add("issue-list-cell");
       var content = new VBox();
@@ -213,7 +223,7 @@ public class MainWindow {
     }
 
     @Override
-    protected void updateItem(TaskQueryResponse item, boolean empty) {
+    protected void updateItem(TaskData item, boolean empty) {
       super.updateItem(item, empty);
 
       placeholder.set(false);
@@ -251,13 +261,13 @@ public class MainWindow {
     }
 
     private static void updateTaskStatus(
-        TaskQueryResponse item, Integer columnIndex, ObservableList<String> styleClass) {
+        TaskData item, Integer columnIndex, ObservableList<String> styleClass) {
       log.debug("Task updated {}", item);
-      item.setStatus(TaskStatusQueryResponse.values()[columnIndex]);
+      item.setStatus(TaskStatusData.values()[columnIndex]);
       styleClass.add(item.getStatus().getDescription());
     }
 
-    private Optional<Integer> getTaskColumnIndex(TaskQueryResponse item) {
+    private Optional<Integer> getTaskColumnIndex(TaskData item) {
       log.debug("Dragged {}", getMultiColumnListView().getDraggedItems());
       for (int i = 0; i < getMultiColumnListView().getColumns().size(); i++) {
         for (int j = 0; j < getMultiColumnListView().getColumns().get(i).getItems().size(); j++) {

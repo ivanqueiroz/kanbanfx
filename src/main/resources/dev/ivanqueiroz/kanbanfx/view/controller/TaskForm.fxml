@@ -8,10 +8,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox fx:id="dialog" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-      prefHeight="321.0"
-      prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      prefHeight="320.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="dev.ivanqueiroz.kanbanfx.view.controller.TaskForm">
     <HBox alignment="CENTER_LEFT" prefHeight="48.0" prefWidth="600.0">
         <Label text="Name:">
@@ -22,14 +20,14 @@
                 <Insets/>
             </HBox.margin>
         </Label>
-        <TextField prefHeight="24.0" prefWidth="530.0"/>
+        <TextField fx:id="nameTxtField" prefHeight="24.0" prefWidth="530.0"/>
     </HBox>
     <Label text="Description">
         <padding>
             <Insets left="10.0" right="5.0"/>
         </padding>
     </Label>
-    <TextArea prefHeight="200.0" prefWidth="200.0">
+    <TextArea fx:id="descriptionTxtArea" prefHeight="200.0" prefWidth="200.0">
         <VBox.margin>
             <Insets left="10.0" right="10.0" top="10.0"/>
         </VBox.margin>
