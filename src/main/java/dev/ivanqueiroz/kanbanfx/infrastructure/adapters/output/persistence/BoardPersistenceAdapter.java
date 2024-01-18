@@ -13,17 +13,16 @@ public class BoardPersistenceAdapter implements BoardOutputPort {
   private final BoardRepository boardRepository;
   private final BoardPersistenceMapper boardPersistenceMapper;
 
-  @Override
-  public Board save(Board board) {
-    var boardEntity = boardPersistenceMapper.toBoardEntity(board);
-    var savedBoard = boardRepository.save(boardEntity);
-    return boardPersistenceMapper.toBoard(savedBoard);
-  }
-
   @Transactional
   @Override
   public Optional<Board> findBoardByName(String name) {
     var boardEntity = boardRepository.findBoardEntityByNameEqualsIgnoreCase(name);
+    return boardEntity.map(boardPersistenceMapper::toBoard);
+  }
+
+  @Override
+  public Optional<Board> findBoardById(Long id) {
+    var boardEntity = boardRepository.findBoardEntityById(id);
     return boardEntity.map(boardPersistenceMapper::toBoard);
   }
 }

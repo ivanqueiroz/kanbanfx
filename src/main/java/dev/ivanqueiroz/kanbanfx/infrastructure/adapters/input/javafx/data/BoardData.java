@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardData {
+  private Long id;
   private String description;
   private String name;
   private List<ColumnData> columns;

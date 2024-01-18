@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 @Table(name = "column")
 public class ColumnEntity {
   @Id
@@ -24,6 +25,6 @@ public class ColumnEntity {
   @JoinColumn(name = "board_id", nullable = false)
   private BoardEntity board;
 
-  @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "column", cascade = CascadeType.ALL, orphanRemoval = true)
   List<TaskEntity> tasks;
 }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ColumnData {
+  private Long id;
   private String name;
   private int workInProgressLimit;
   private List<TaskData> tasks;

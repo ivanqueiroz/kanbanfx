@@ -1,7 +1,7 @@
 package dev.ivanqueiroz.kanbanfx.domain.service;
 
-import dev.ivanqueiroz.kanbanfx.domain.application.ports.input.CreateColumnUseCase;
 import dev.ivanqueiroz.kanbanfx.domain.application.ports.input.GetColumnsUseCase;
+import dev.ivanqueiroz.kanbanfx.domain.application.ports.input.UpdateColumnUseCase;
 import dev.ivanqueiroz.kanbanfx.domain.application.ports.output.ColumnOutputPort;
 import dev.ivanqueiroz.kanbanfx.domain.model.Board;
 import dev.ivanqueiroz.kanbanfx.domain.model.Column;
@@ -12,14 +12,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ColumnService implements CreateColumnUseCase, GetColumnsUseCase {
+public class ColumnService implements UpdateColumnUseCase, GetColumnsUseCase {
 
   private final ColumnOutputPort columnOutputPort;
-
-  @Override
-  public Column createColumn(Column column) {
-    return columnOutputPort.save(column);
-  }
 
   @Override
   public Column updateColumn(Column column) {

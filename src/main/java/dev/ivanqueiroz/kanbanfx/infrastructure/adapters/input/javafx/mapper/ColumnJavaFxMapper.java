@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = TaskJavaFxMapper.class)
 public interface ColumnJavaFxMapper {
-  ColumnData toColumnQueryResponse(Column column);
+  ColumnData toColumnData(Column column);
 
   Column toColumn(ColumnData columnData);
 }

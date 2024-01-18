@@ -11,7 +11,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class ColumnPersistenceAdapter implements ColumnOutputPort {
 
@@ -33,30 +35,7 @@ public class ColumnPersistenceAdapter implements ColumnOutputPort {
   private ColumnEntity updateOldTasks(Column column, ColumnEntity columnEntityFromDb) {
     var columnEntityMapper = columnPersistenceMapper.toColumnEntity(column);
 
-    columnEntityMapper
-        .getTasks()
-        .forEach(
-            taskEntityMapper ->
-                columnEntityFromDb.getTasks().stream()
-                    .filter(
-                        taskEntity ->
-                            taskEntityMapper.getId() != null
-                                && taskEntityMapper.getPosition().equals(taskEntity.getPosition()))
-                    .toList()
-                    .stream()
-                    .findFirst()
-                    .ifPresent(
-                        taskEntity -> {
-                          taskEntityMapper.setId(taskEntity.getId());
-                          taskEntityMapper.setColumn(taskEntity.getColumn());
-                          taskEntityMapper.setTitle(taskEntity.getTitle());
-                          taskEntityMapper.setDescription(taskEntity.getDescription());
-                          taskEntityMapper.setPosition(taskEntity.getPosition());
-                        }));
-
-    columnEntityMapper.getTasks().stream()
-        .filter(taskEntityMapper -> taskEntityMapper.getId() == null)
-        .forEach(taskEntityMapper -> taskEntityMapper.setColumn(columnEntityFromDb));
+    columnEntityMapper.getTasks().forEach(taskEntity -> taskEntity.setColumn(columnEntityFromDb));
     return columnEntityMapper;
   }
 

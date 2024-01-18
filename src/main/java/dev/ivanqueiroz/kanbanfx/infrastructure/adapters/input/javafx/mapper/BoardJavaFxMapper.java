@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses = ColumnJavaFxMapper.class)
 public interface BoardJavaFxMapper {
 
-  BoardData toBoardQueryResponse(Board board);
+  BoardData toBoardData(Board board);
 }

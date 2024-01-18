@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 public class Column {
 
+  private Long id;
   private String name;
   private int workInProgressLimit;
   private List<Task> tasks;

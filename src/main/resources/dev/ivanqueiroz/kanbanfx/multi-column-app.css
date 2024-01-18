@@ -46,3 +46,34 @@
 
 .issue-list-cell:to {
 }
+
+.form-task {
+    -fx-background-color: transparent;
+    -fx-pref-height: 320px;
+}
+
+.form-task.todo {
+    -fx-background-color: -blue;
+}
+
+.form-task.in-progress {
+    -fx-background-color: -yellowish-orange;
+}
+
+.form-task.done {
+    -fx-background-color: -slate-green;
+}
+
+.label-form {
+    -fx-font-size: 1.0em;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.icon-button {
+    -fx-background-color: transparent, transparent, transparent, transparent, transparent;
+}
+
+.icon-button:hover{
+    -fx-cursor: hand;
+}

@@ -4,4 +4,6 @@ import dev.ivanqueiroz.kanbanfx.domain.model.Board;
 
 public interface GetBoardUseCase {
   Board getBoardByName(String name);
+
+  Board getBoardById(Long id);
 }

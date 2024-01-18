@@ -14,6 +14,11 @@ public class BoardJavaFxAdapter {
 
   public BoardData getBoardByName(String name) {
     var board = getBoardUseCase.getBoardByName(name);
-    return boardJavaFxMapper.toBoardQueryResponse(board);
+    return boardJavaFxMapper.toBoardData(board);
+  }
+
+  public BoardData getBoardById(Long id) {
+    var board = getBoardUseCase.getBoardById(id);
+    return boardJavaFxMapper.toBoardData(board);
   }
 }

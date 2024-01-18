@@ -22,6 +22,7 @@
         <cssfx.version>11.5.1</cssfx.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <fmt-maven-plugin.version>2.21.1</fmt-maven-plugin.version>
+        <commons-collections4.version>4.4</commons-collections4.version>
     </properties>
 
     <dependencies>
@@ -52,6 +53,12 @@
             <groupId>fr.brouillard.oss</groupId>
             <artifactId>cssfx</artifactId>
             <version>${cssfx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections4.version}</version>
         </dependency>
 
         <dependency>

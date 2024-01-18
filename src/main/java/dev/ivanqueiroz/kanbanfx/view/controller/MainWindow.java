@@ -1,6 +1,8 @@
 package dev.ivanqueiroz.kanbanfx.view.controller;
 
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.BoardJavaFxAdapter;
+import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.ColumnJavaFxAdapter;
+import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.TaskJavaFxAdapter;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.BoardData;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.ColumnData;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskData;
@@ -10,7 +12,7 @@ import dev.ivanqueiroz.kanbanfx.view.components.MultiColumnListView.ColumnListCe
 import dev.ivanqueiroz.kanbanfx.view.components.MultiColumnListView.ListViewColumn;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -27,6 +29,8 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -38,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.rgielen.fxweaver.core.FxControllerAndView;
 import net.rgielen.fxweaver.core.FxWeaver;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -49,9 +54,10 @@ public class MainWindow {
   @FXML private MenuItem quitMenuItem;
   @FXML private BorderPane borderPane;
   private final BoardJavaFxAdapter boardJavaFxAdapter;
+  private final ColumnJavaFxAdapter columnJavaFxAdapter;
+  private final TaskJavaFxAdapter taskJavaFxAdapter;
   private final FxWeaver fxWeaver;
   private MultiColumnListView<TaskData> multiColumnListView;
-  private BoardData taskBoard;
 
   @FXML
   public void initialize() {
@@ -60,14 +66,13 @@ public class MainWindow {
   }
 
   private void initializeBoard() {
+    BoardData taskBoard = boardJavaFxAdapter.getBoardByName("Task Board");
+    var columns = createBoardColumns(taskBoard);
+
     multiColumnListView = new MultiColumnListView<>();
     multiColumnListView.setCellFactory(listView -> new TaskListCell(multiColumnListView));
-
-    taskBoard = boardJavaFxAdapter.getBoardByName("Task Board");
-    var columns = createBoardColumns(taskBoard);
     multiColumnListView.getColumns().setAll(columns);
     multiColumnListView.setId("multiColumnListView");
-
     multiColumnListView.setPlaceholderFrom(
         TaskData.builder().title("from").description("from_description").build());
     multiColumnListView.setPlaceholderTo(
@@ -132,14 +137,14 @@ public class MainWindow {
   private List<ListViewColumn<TaskData>> createBoardColumns(BoardData taskBoard) {
     return taskBoard.getColumns().stream()
         .map(
-            columnQueryResponse -> {
+            columnData -> {
               var result = new ListViewColumn<TaskData>();
-              var header = createColumnHeader(columnQueryResponse);
+              var header = createColumnHeader(columnData);
               result.setHeader(header);
               result
                   .getItems()
                   .setAll(
-                      columnQueryResponse.getTasks().stream()
+                      columnData.getTasks().stream()
                           .sorted(Comparator.comparing(TaskData::getPosition))
                           .toList());
               return result;
@@ -153,7 +158,7 @@ public class MainWindow {
 
     var headerRight = new HBox();
     headerRight.setAlignment(Pos.CENTER_RIGHT);
-    var createTaskActionButton = buildCreateTaskButton(columnData.getName());
+    var createTaskActionButton = buildCreateTaskButton(columnData);
     headerRight.getChildren().add(createTaskActionButton);
 
     HBox.setHgrow(headerRight, Priority.ALWAYS);
@@ -161,15 +166,13 @@ public class MainWindow {
     return header;
   }
 
-  private Button buildCreateTaskButton(String columnName) {
+  private Button buildCreateTaskButton(ColumnData columnData) {
     var createTaskActionButton = new Button("+");
 
     createTaskActionButton.setOnAction(
         event -> {
           FxControllerAndView<TaskForm, VBox> taskForm = fxWeaver.load(TaskForm.class);
-          var statusQueryResponse =
-              TaskStatusData.getByDescription(columnName.toLowerCase(Locale.ROOT));
-          taskForm.getController().show(event, statusQueryResponse, multiColumnListView);
+          taskForm.getController().show(event, columnData, multiColumnListView);
         });
 
     return createTaskActionButton;
@@ -180,8 +183,7 @@ public class MainWindow {
     quitMenuItem.setOnAction(e -> Platform.exit());
   }
 
-  @Slf4j
-  private static class TaskListCell extends ColumnListCell<TaskData> {
+  private class TaskListCell extends ColumnListCell<TaskData> {
     private final BooleanProperty placeholder =
         new SimpleBooleanProperty(this, "placeholder", false);
     private StringProperty taskDescription;
@@ -213,19 +215,57 @@ public class MainWindow {
       taskDescriptionLbl.textProperty().bind(taskDescriptionProperty());
       taskDescriptionLbl.setPadding(new Insets(10, 10, 0, 10));
 
+      var btnHbox = new HBox();
+
+      var btnDelete = new Button();
+      btnDelete.getStyleClass().add("icon-button");
+      btnDelete.setAlignment(Pos.CENTER);
+      btnDelete.setMaxHeight(20);
+      btnDelete.setMinHeight(20);
+      btnDelete.setMaxWidth(20);
+      btnDelete.setMinWidth(20);
+      btnDelete.setOnAction(
+          event -> {
+            taskJavaFxAdapter.deleteTaskById(getItem().getId());
+            getListView().getItems().remove(getItem());
+          });
+
+      var image =
+          new Image(Objects.requireNonNull(getClass().getResourceAsStream("delete_white.png")));
+      var imageView = new ImageView(image);
+      imageView.setPreserveRatio(true);
+      imageView.fitHeightProperty().bind(btnDelete.heightProperty());
+      imageView.fitWidthProperty().bind(btnDelete.widthProperty());
+      btnDelete.setGraphic(imageView);
+
+      btnHbox.setPadding(new Insets(10, 10, 0, 10));
+      btnHbox.setAlignment(Pos.BOTTOM_RIGHT);
+      btnHbox.getChildren().add(btnDelete);
+
       content.getChildren().add(taskTitleLbl);
       content.getChildren().add(separator);
       content.getChildren().add(taskDescriptionLbl);
+      content.getChildren().add(btnHbox);
 
       var wrapper = new StackPane(content, contentPlaceholder);
       setGraphic(wrapper);
       setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+
+      itemProperty()
+          .addListener(
+              (obs, oldItem, newItem) -> {
+                if (newItem != null) {
+                  var taskColumnIndex = getTaskColumnIndex(newItem).orElseThrow();
+                  var items = getMultiColumnListView().getColumns().get(taskColumnIndex).getItems();
+                  int position = items.indexOf(newItem);
+                  items.get(position).setPosition((long) position);
+                }
+              });
     }
 
     @Override
     protected void updateItem(TaskData item, boolean empty) {
       super.updateItem(item, empty);
-
       placeholder.set(false);
 
       getStyleClass().removeAll("todo", "in-progress", "done");
@@ -241,6 +281,7 @@ public class MainWindow {
           setText(item.getTitle());
           setTaskDescription(item.getDescription());
           getStyleClass().add(item.getStatus().getDescription());
+
           getTaskColumnIndex(item)
               .ifPresent(columnIndex -> updateTaskStatus(item, columnIndex, getStyleClass()));
         }
@@ -262,22 +303,46 @@ public class MainWindow {
 
     private static void updateTaskStatus(
         TaskData item, Integer columnIndex, ObservableList<String> styleClass) {
-      log.debug("Task updated {}", item);
+      if (log.isDebugEnabled()) {
+        log.debug("Task updated {}", item);
+      }
       item.setStatus(TaskStatusData.values()[columnIndex]);
       styleClass.add(item.getStatus().getDescription());
     }
 
     private Optional<Integer> getTaskColumnIndex(TaskData item) {
-      log.debug("Dragged {}", getMultiColumnListView().getDraggedItems());
       for (int i = 0; i < getMultiColumnListView().getColumns().size(); i++) {
         for (int j = 0; j < getMultiColumnListView().getColumns().get(i).getItems().size(); j++) {
           if (getMultiColumnListView().getColumns().get(i).getItems().get(j).equals(item)) {
-            log.debug("Item found at index {}", i);
+            if (log.isDebugEnabled()) {
+              log.debug("Item found at index {}", i);
+            }
             return Optional.of(i);
           }
         }
       }
       return Optional.empty();
+    }
+  }
+
+  @Scheduled(fixedRate = 5000)
+  public void saveBoard() {
+    if (this.multiColumnListView != null) {
+      this.multiColumnListView
+          .getColumns()
+          .forEach(
+              taskDataListViewColumn -> {
+                if (log.isDebugEnabled()) {
+                  log.debug("Saving board");
+                }
+                var columnName =
+                    ((Label) ((HBox) taskDataListViewColumn.getHeader()).getChildren().get(0))
+                        .getText()
+                        .toLowerCase();
+                var columnData = columnJavaFxAdapter.getColumnByName(columnName).orElseThrow();
+                columnData.setTasks(taskDataListViewColumn.getItems());
+                columnJavaFxAdapter.save(columnData);
+              });
     }
   }
 }

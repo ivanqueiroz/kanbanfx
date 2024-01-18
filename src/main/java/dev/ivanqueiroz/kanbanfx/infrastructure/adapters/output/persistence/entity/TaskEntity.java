@@ -7,6 +7,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -23,6 +24,7 @@ public class TaskEntity {
 
   @ManyToOne
   @JoinColumn(name = "column_id", nullable = false)
+  @ToString.Exclude
   private ColumnEntity column;
 
   @Column(name = "created_at")

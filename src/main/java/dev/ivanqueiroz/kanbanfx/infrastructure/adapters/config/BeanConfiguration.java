@@ -2,14 +2,18 @@ package dev.ivanqueiroz.kanbanfx.infrastructure.adapters.config;
 
 import dev.ivanqueiroz.kanbanfx.domain.application.ports.output.BoardOutputPort;
 import dev.ivanqueiroz.kanbanfx.domain.application.ports.output.ColumnOutputPort;
+import dev.ivanqueiroz.kanbanfx.domain.application.ports.output.TaskOutputPort;
 import dev.ivanqueiroz.kanbanfx.domain.service.BoardService;
 import dev.ivanqueiroz.kanbanfx.domain.service.ColumnService;
+import dev.ivanqueiroz.kanbanfx.domain.service.TaskService;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.BoardPersistenceAdapter;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.ColumnPersistenceAdapter;
+import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.TaskPersistenceAdapter;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.mapper.BoardPersistenceMapper;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.mapper.ColumnPersistenceMapper;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.repository.BoardRepository;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.repository.ColumnRepository;
+import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.output.persistence.repository.TaskRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,5 +42,15 @@ public class BeanConfiguration {
   @Bean
   public ColumnService columnService(ColumnOutputPort columnOutputPort) {
     return new ColumnService(columnOutputPort);
+  }
+
+  @Bean
+  public TaskPersistenceAdapter taskPersistenceAdapter(TaskRepository taskRepository) {
+    return new TaskPersistenceAdapter(taskRepository);
+  }
+
+  @Bean
+  public TaskService taskService(TaskOutputPort taskOutputPort) {
+    return new TaskService(taskOutputPort);
   }
 }

@@ -8,7 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface TaskPersistenceMapper {
 
-  @Mapping(target = "id", ignore = true)
   @Mapping(target = "column", ignore = true)
   TaskEntity toTaskEntity(Task task);
 

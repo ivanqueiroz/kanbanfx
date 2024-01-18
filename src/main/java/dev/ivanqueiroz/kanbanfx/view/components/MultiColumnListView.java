@@ -340,7 +340,7 @@ public class MultiColumnListView<T> extends Control {
               return;
             }
 
-            ClipboardContent content = new ClipboardContent();
+            var content = new ClipboardContent();
             content.putString(Integer.toString(getIndex()));
 
             WritableImage snapshot = snapshot(null, null);

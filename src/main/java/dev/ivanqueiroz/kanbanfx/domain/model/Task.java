@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class Task {
+  private Long id;
   private String title;
   private String description;
   @Builder.Default private TaskStatus status = TaskStatus.TODO;
