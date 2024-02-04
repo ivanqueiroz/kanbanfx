@@ -1,11 +1,11 @@
 package dev.ivanqueiroz.kanbanfx.view.controller;
 
+import com.dlsc.gemsfx.MultiColumnListView;
 import dev.ivanqueiroz.kanbanfx.StageReadyEventListener;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.ColumnJavaFxAdapter;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.ColumnData;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskData;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskStatusData;
-import dev.ivanqueiroz.kanbanfx.view.components.MultiColumnListView;
 import java.util.Objects;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

@@ -1,5 +1,7 @@
 package dev.ivanqueiroz.kanbanfx.view.controller;
 
+import com.dlsc.gemsfx.MultiColumnListView;
+import com.dlsc.gemsfx.MultiColumnListView.ListViewColumn;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.BoardJavaFxAdapter;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.ColumnJavaFxAdapter;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.TaskJavaFxAdapter;
@@ -7,9 +9,6 @@ import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.BoardD
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.ColumnData;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskData;
 import dev.ivanqueiroz.kanbanfx.infrastructure.adapters.input.javafx.data.TaskStatusData;
-import dev.ivanqueiroz.kanbanfx.view.components.MultiColumnListView;
-import dev.ivanqueiroz.kanbanfx.view.components.MultiColumnListView.ColumnListCell;
-import dev.ivanqueiroz.kanbanfx.view.components.MultiColumnListView.ListViewColumn;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -183,7 +182,7 @@ public class MainWindow {
     quitMenuItem.setOnAction(e -> Platform.exit());
   }
 
-  private class TaskListCell extends ColumnListCell<TaskData> {
+  private class TaskListCell extends MultiColumnListView.ColumnListCell<TaskData> {
     private final BooleanProperty placeholder =
         new SimpleBooleanProperty(this, "placeholder", false);
     private StringProperty taskDescription;
@@ -258,7 +257,7 @@ public class MainWindow {
                   var taskColumnIndex = getTaskColumnIndex(newItem).orElseThrow();
                   var items = getMultiColumnListView().getColumns().get(taskColumnIndex).getItems();
                   int position = items.indexOf(newItem);
-                  items.get(position).setPosition((long) position);
+                  ((TaskData) items.get(position)).setPosition((long) position);
                 }
               });
     }

@@ -23,6 +23,7 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <fmt-maven-plugin.version>2.21.1</fmt-maven-plugin.version>
         <commons-collections4.version>4.4</commons-collections4.version>
+        <gemsfx.version>1.92.0</gemsfx.version>
     </properties>
 
     <dependencies>
@@ -53,6 +54,22 @@
             <groupId>fr.brouillard.oss</groupId>
             <artifactId>cssfx</artifactId>
             <version>${cssfx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dlsc.gemsfx</groupId>
+            <artifactId>gemsfx</artifactId>
+            <version>${gemsfx.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-collections</groupId>
+                    <artifactId>commons-collections</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
